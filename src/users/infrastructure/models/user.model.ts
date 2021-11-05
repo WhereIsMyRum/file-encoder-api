@@ -1,8 +1,8 @@
-import { RSAKeyPair } from 'src/users/domain/rsa-key-pair';
+import { RSAKeyPair } from '../../../users/domain';
 
 export interface UserModel {
   id: string;
   email: string;
   password: string;
-  rsaKeyPair: RSAKeyPair;
+  rsaKeyPair?: RSAKeyPair;
 }

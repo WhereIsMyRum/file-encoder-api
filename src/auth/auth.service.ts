@@ -2,9 +2,15 @@ import { Injectable } from '@nestjs/common';
 import { isEqual } from 'lodash';
 import { JwtService } from '@nestjs/jwt';
 
-import { UserRepository } from 'src/users/infrastructure';
-import { User } from 'src/users/domain';
-import { JwtPayload } from '../guards';
+import { UserRepository } from '../users/infrastructure';
+import { User } from '../users/domain';
+import { JwtPayload } from './guards';
+import { ApiProperty } from '@nestjs/swagger';
+
+export class AuthToken {
+  @ApiProperty({ description: 'Api Bearer token' })
+  authToken!: string;
+}
 
 @Injectable()
 export class AuthService {
@@ -23,7 +29,7 @@ export class AuthService {
     return null;
   }
 
-  async login(user: User) {
+  login(user: User): AuthToken {
     const jwtPayload: JwtPayload = { email: user.getEmail() };
 
     return {

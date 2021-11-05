@@ -1,23 +1,40 @@
-import { Controller, Post, Request, UseGuards } from '@nestjs/common';
-import { AuthGuard } from '@nestjs/passport';
-import { ApiTags } from '@nestjs/swagger';
-import { AuthService } from '../application/auth.service';
-import { JwtAuthGuard, LocalAuthGuard } from '../guards';
+import { Controller, Post, Req, UseGuards, Body } from '@nestjs/common';
+import {
+  ApiBasicAuth,
+  ApiProperty,
+  ApiTags,
+  ApiResponse,
+} from '@nestjs/swagger';
+import { AuthService } from '../auth.service';
+import { LocalAuthGuard } from '../guards';
+import { LoggedInUserDto } from '../../auth';
+import { AuthToken } from '../auth.service';
 
-@ApiTags('auth')
+export class Credentials {
+  @ApiProperty()
+  email!: string;
+
+  @ApiProperty()
+  password!: string;
+}
+
+@ApiTags('Auth')
 @Controller()
 export class AuthController {
   constructor(private authService: AuthService) {}
 
+  @ApiBasicAuth('Email and password auth')
+  @ApiResponse({
+    status: 200,
+    type: AuthToken,
+    description: 'Api bearer token',
+  })
   @UseGuards(LocalAuthGuard)
   @Post('/sign-in')
-  async signIn(@Request() req) {
+  async signIn(
+    @Req() req: LoggedInUserDto,
+    @Body() credentials: Credentials,
+  ): Promise<AuthToken> {
     return this.authService.login(req.user);
-  }
-
-  @UseGuards(JwtAuthGuard)
-  @Post('/generate-key-pair')
-  generateKeyPair(@Request() req) {
-    return req.user;
   }
 }
