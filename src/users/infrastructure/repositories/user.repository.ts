@@ -1,12 +1,13 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { plainToClass } from 'class-transformer';
 
+import { RepositoryInterface } from '@file-encoder-api/common';
+
+import { User } from '../../domain';
 import { UserModels, UserModel } from '../models';
 import { UserNotFoundException } from '../exceptions';
-import { User } from '../../domain';
-import { RepositoryInterface } from '../../../common';
 
 @Injectable()
 export class UserRepository implements RepositoryInterface<User> {
@@ -15,32 +16,25 @@ export class UserRepository implements RepositoryInterface<User> {
     private readonly userModel: Model<UserModel>,
   ) {}
 
-  async save(user: User): Promise<void> {
-    const userModel = await this.userModel.findOne({ id: user.getId() });
-
-    if (!userModel) {
-      throw new UserNotFoundException(`id: ${user.getId()}`);
-    }
-
-    userModel.password = user.getPassword();
-    userModel.rsaKeyPair = user.getRsaKeyPair();
-
-    userModel.save();
+  async save(user: User): Promise<User | null> {
+    return plainToClass(
+      User,
+      this.userModel.findOneAndUpdate({ id: user.getId() }, user.parameters(), {
+        new: true,
+      }),
+    );
   }
 
   async insert(user: User): Promise<string> {
-    const newUser = await this.userModel.create(user);
+    const newUser = await this.userModel.create(user.parameters());
+
     const savedUser = await newUser.save();
 
     return savedUser.id;
   }
 
-  async getById(id: string): Promise<User> {
+  async getById(id: string): Promise<User | null> {
     const user = await this.userModel.findOne({ id }).lean();
-
-    if (!user) {
-      throw new UserNotFoundException(`id: ${id}`);
-    }
 
     return plainToClass(User, user);
   }
@@ -51,13 +45,13 @@ export class UserRepository implements RepositoryInterface<User> {
     return plainToClass(User, users);
   }
 
-  async getByEmail(email: string): Promise<User> {
+  async getByEmail(email: string): Promise<User | null> {
     const user = await this.userModel.findOne({ email }).lean();
 
-    if (!user) {
-      throw new UserNotFoundException(`email: ${email}`);
-    }
-
     return plainToClass(User, user);
+  }
+
+  async delete(id: string): Promise<void> {
+    await this.userModel.deleteOne({ id });
   }
 }

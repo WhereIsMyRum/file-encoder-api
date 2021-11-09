@@ -1,8 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import * as crypto from 'crypto';
-import { NotFoundException } from '@nestjs/common';
-import { readFileSync } from 'fs';
 import * as path from 'path';
+import { promises as fs } from 'fs';
 
 import { RSAKeyPairNotFoundException } from './exceptions';
 import { DataToEncrypt, DecryptedData, EncryptedData } from './dtos';
@@ -49,7 +48,7 @@ export class EncryptorService {
     }
 
     const ciphertextBlocks: string[] = [];
-    const data = this.getDataToEncrypt(dataToEncrypt);
+    const data = await this.getDataToEncrypt(dataToEncrypt);
     let i = 0;
 
     do {
@@ -86,8 +85,10 @@ export class EncryptorService {
     return { contents: decryptedFileChunks.join() };
   }
 
-  private getDataToEncrypt(dataToEncrypt?: DataToEncrypt): Buffer {
-    let data = readFileSync(FILE_PATH);
+  private async getDataToEncrypt(
+    dataToEncrypt?: DataToEncrypt,
+  ): Promise<Buffer> {
+    let data = await fs.readFile(FILE_PATH);
 
     if (dataToEncrypt?.data) {
       data = Buffer.from(dataToEncrypt.data);

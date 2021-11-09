@@ -6,10 +6,12 @@ import { AuthController } from './user-interface/auth.controller';
 import { UsersModule } from '../users';
 import { AuthService } from './auth.service';
 import { JwtStrategy, LocalStrategy } from './guards';
+import { CommonModule } from '../common';
 
 @Module({
   imports: [
     UsersModule,
+    CommonModule,
     JwtModule.registerAsync({
       imports: [ConfigModule],
       inject: [ConfigService],

@@ -1,31 +1,27 @@
-import { Module } from '@nestjs/common';
+import { Module, OnApplicationShutdown } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import { MongoMemoryServer } from 'mongodb-memory-server';
-import { ConfigModule, ConfigService } from '@nestjs/config';
+import { ConfigModule } from '@nestjs/config';
 
 import { AuthModule } from './auth';
 import { EncryptorModule } from './encryptor';
 import { UsersModule } from './users';
+import { CommonModule } from './common';
+
+let mongod: MongoMemoryServer;
 
 @Module({
   imports: [
+    AuthModule,
+    CommonModule,
     EncryptorModule,
     UsersModule,
-    AuthModule,
     ConfigModule.forRoot({
       isGlobal: true,
     }),
     MongooseModule.forRootAsync({
-      imports: [ConfigModule],
-      inject: [ConfigService],
-      useFactory: async (configService: ConfigService) => {
-        const mongod = await MongoMemoryServer.create({
-          instance: {
-            dbPath: configService.get('DATABASE_PATH'),
-            dbName: configService.get('DATABASE_NAME'),
-            storageEngine: configService.get('DATABASE_STORAGE_ENGINE'),
-          },
-        });
+      useFactory: async () => {
+        mongod = await MongoMemoryServer.create();
         const uri = await mongod.getUri();
         return { uri: uri };
       },
@@ -34,4 +30,8 @@ import { UsersModule } from './users';
   controllers: [],
   providers: [],
 })
-export class AppModule {}
+export class AppModule implements OnApplicationShutdown {
+  async onApplicationShutdown() {
+    if (mongod) await mongod.stop();
+  }
+}
