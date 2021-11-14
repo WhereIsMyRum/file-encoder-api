@@ -2,10 +2,10 @@ import { ApiProperty } from '@nestjs/swagger';
 
 export class RSAKeyPair {
   @ApiProperty()
-  publicKey!: string;
+  pubKey!: string;
 
   @ApiProperty()
-  privateKey!: string;
+  privKey!: string;
 }
 
 export type UserParameters = {
@@ -13,6 +13,15 @@ export type UserParameters = {
   email: string;
   rsaKeyPair?: RSAKeyPair;
 };
+
+export interface UserCredentials {
+  id: string;
+  email: string;
+  password: {
+    salt: string;
+    hashedPassword: string;
+  };
+}
 
 export class User {
   constructor(

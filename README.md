@@ -31,6 +31,33 @@ $ yarn run test
 ```
 
 ## Commentary
+App is running on port 3000. The Api documentation can be found at `/api/doc`
+
+# Default existing users:
+```
+email: piotr@gmail.com
+password: password1
+
+email: mateusz@gmail.com
+password: password2
+
+email: tadek@gmail.com
+password: password3
+```
+
+# The app is using the following env variables:
+```
+JWT_SECRET - secret used for generating jwt tokens
+JWT_EXPIRY_TIME - the time after which the jwt tokens expire
+
+USER_EMAIL - users created in the database by default in CSV
+USER_PASSWORDS - passwords for users created by default in CSV (1st email ->1st password, 2nd email -> 2nd password etc.)
+```
+
+
+
+### Old doc:
+## Commentary
 
 Passwords have been implemented in plain text on purpose.
 The API documentation is available at 

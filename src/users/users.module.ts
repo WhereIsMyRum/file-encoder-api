@@ -12,6 +12,7 @@ import {
   UserSchema,
 } from './infrastructure';
 import { UserManagementService } from './application';
+import { factories } from './domain';
 
 @Module({
   imports: [
@@ -21,7 +22,12 @@ import { UserManagementService } from './application';
       { name: UserModels.Credentials, schema: CredentialsSchema },
     ]),
   ],
-  providers: [UserManagementService, UserRepository, CredentialsRepository],
+  providers: [
+    UserManagementService,
+    UserRepository,
+    CredentialsRepository,
+    ...factories,
+  ],
   exports: [UserRepository, UserManagementService, CredentialsRepository],
 })
 export class UsersModule implements OnApplicationBootstrap {

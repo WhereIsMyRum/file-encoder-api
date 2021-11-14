@@ -1,12 +1,16 @@
+import { ApiProperty } from '@nestjs/swagger';
 import { Injectable } from '@nestjs/common';
-import { isEqual } from 'lodash';
 import { JwtService } from '@nestjs/jwt';
 
-import { UserRepository, CredentialsRepository } from '../users/infrastructure';
-import { User } from '../users/domain';
-import { JwtPayload } from './guards';
-import { ApiProperty } from '@nestjs/swagger';
-import { PasswordService } from 'src/common/services/password.service';
+import {
+  UserRepository,
+  CredentialsRepository,
+} from '@file-encoder-api/users/infrastructure';
+import { UserNotFoundException } from '@file-encoder-api/users/application';
+import { PasswordService } from '@file-encoder-api/common';
+import { User } from '@file-encoder-api/users/domain';
+
+import { JwtPayload } from '../guards';
 
 export class AuthToken {
   @ApiProperty({ description: 'Api Bearer token' })
@@ -26,13 +30,13 @@ export class AuthService {
     const user = await this.userRepository.getByEmail(email);
 
     if (!user) {
-      throw new Error();
+      throw new UserNotFoundException();
     }
 
     const credentials = await this.credentialsRepository.getById(user.getId());
 
     if (!credentials) {
-      throw new Error();
+      throw new UserNotFoundException();
     }
 
     if (await this.passwordService.checkPassword(credentials, password)) {

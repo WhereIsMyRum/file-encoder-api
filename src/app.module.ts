@@ -1,12 +1,12 @@
+import { ConfigModule } from '@nestjs/config';
 import { Module, OnApplicationShutdown } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import { MongoMemoryServer } from 'mongodb-memory-server';
-import { ConfigModule } from '@nestjs/config';
 
-import { AuthModule } from './auth';
-import { EncryptorModule } from './encryptor';
-import { UsersModule } from './users';
-import { CommonModule } from './common';
+import { AuthModule } from '@file-encoder-api/auth';
+import { EncryptorModule } from '@file-encoder-api/encryptor';
+import { UsersModule } from '@file-encoder-api/users';
+import { CommonModule } from '@file-encoder-api/common';
 
 let mongod: MongoMemoryServer;
 
@@ -27,8 +27,6 @@ let mongod: MongoMemoryServer;
       },
     }),
   ],
-  controllers: [],
-  providers: [],
 })
 export class AppModule implements OnApplicationShutdown {
   async onApplicationShutdown() {

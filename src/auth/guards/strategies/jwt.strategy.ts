@@ -1,10 +1,12 @@
 import { Request } from 'express';
 import { ExtractJwt, Strategy } from 'passport-jwt';
 import { PassportStrategy } from '@nestjs/passport';
-import { UserRepository } from '../../../users/infrastructure';
-import { User } from '../../../users/domain';
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
+
+import { UserNotFoundException } from '@file-encoder-api/users/application';
+import { UserRepository } from '@file-encoder-api/users/infrastructure';
+import { User } from '@file-encoder-api/users/domain';
 
 export interface JwtPayload {
   email: string;
@@ -32,7 +34,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     const user = await this.userRepository.getByEmail(payload.email);
 
     if (!user) {
-      throw new Error();
+      throw new UserNotFoundException();
     }
 
     return user;

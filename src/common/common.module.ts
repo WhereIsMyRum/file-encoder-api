@@ -1,9 +1,11 @@
 import { Module } from '@nestjs/common';
+import { HttpModule } from '@nestjs/axios';
 
-import { PasswordService } from './services';
+import { PasswordService, FileFetcherService } from './services';
 
 @Module({
-  providers: [PasswordService],
-  exports: [PasswordService],
+  imports: [HttpModule],
+  providers: [PasswordService, FileFetcherService],
+  exports: [PasswordService, FileFetcherService],
 })
 export class CommonModule {}

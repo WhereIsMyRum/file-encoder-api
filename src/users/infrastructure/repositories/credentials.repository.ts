@@ -22,7 +22,7 @@ export class CredentialsRepository
           id: credentials.id,
         },
         { ...credentials },
-        { new: true },
+        { new: true, projection: '-_id -__v' },
       )
       .lean();
   }
@@ -35,12 +35,8 @@ export class CredentialsRepository
     return savedCredentials.id;
   }
 
-  async getById(id: string): Promise<CredentialsModel> {
-    return this.credentialsModel.findOne({ id }).lean();
-  }
-
-  async getAll(): Promise<CredentialsModel[]> {
-    return this.credentialsModel.find().lean();
+  async getById(id: string): Promise<CredentialsModel | null> {
+    return this.credentialsModel.findOne({ id }, '-_id -__v').lean();
   }
 
   async delete(id: string): Promise<void> {

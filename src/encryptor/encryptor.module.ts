@@ -1,11 +1,15 @@
 import { Module } from '@nestjs/common';
-import { UsersModule } from '../users';
+
+import { CommonModule } from '@file-encoder-api/common';
+import { UsersModule } from '@file-encoder-api/users';
+
 import { EncryptorController } from './user-interface';
-import { EncryptorService } from './encryptor.service';
+import { EncryptorService } from './domain';
+import { CryptoFunctionsProvider } from './utils';
 
 @Module({
-  imports: [UsersModule],
+  imports: [UsersModule, CommonModule],
   controllers: [EncryptorController],
-  providers: [EncryptorService],
+  providers: [EncryptorService, CryptoFunctionsProvider],
 })
 export class EncryptorModule {}

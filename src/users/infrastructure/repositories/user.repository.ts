@@ -7,7 +7,6 @@ import { RepositoryInterface } from '@file-encoder-api/common';
 
 import { User } from '../../domain';
 import { UserModels, UserModel } from '../models';
-import { UserNotFoundException } from '../exceptions';
 
 @Injectable()
 export class UserRepository implements RepositoryInterface<User> {
@@ -15,15 +14,6 @@ export class UserRepository implements RepositoryInterface<User> {
     @InjectModel(UserModels.User)
     private readonly userModel: Model<UserModel>,
   ) {}
-
-  async save(user: User): Promise<User | null> {
-    return plainToClass(
-      User,
-      this.userModel.findOneAndUpdate({ id: user.getId() }, user.parameters(), {
-        new: true,
-      }),
-    );
-  }
 
   async insert(user: User): Promise<string> {
     const newUser = await this.userModel.create(user.parameters());
@@ -33,20 +23,25 @@ export class UserRepository implements RepositoryInterface<User> {
     return savedUser.id;
   }
 
+  async save(user: User): Promise<User | null> {
+    const updatedUser = await this.userModel
+      .findOneAndUpdate({ id: user.getId() }, user.parameters(), {
+        new: true,
+        projection: '-_id -__v',
+      })
+      .lean();
+
+    return plainToClass(User, updatedUser);
+  }
+
   async getById(id: string): Promise<User | null> {
-    const user = await this.userModel.findOne({ id }).lean();
+    const user = await this.userModel.findOne({ id }, '-_id -__v').lean();
 
     return plainToClass(User, user);
   }
 
-  async getAll(): Promise<User[]> {
-    const users = await this.userModel.find().lean();
-
-    return plainToClass(User, users);
-  }
-
   async getByEmail(email: string): Promise<User | null> {
-    const user = await this.userModel.findOne({ email }).lean();
+    const user = await this.userModel.findOne({ email }, '-_id -__v').lean();
 
     return plainToClass(User, user);
   }

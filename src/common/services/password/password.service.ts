@@ -1,7 +1,9 @@
+import { Injectable } from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
 
-import { CredentialsModel } from 'src/users/infrastructure';
+import { CredentialsModel } from '../../../users/infrastructure';
 
+@Injectable()
 export class PasswordService {
   generateSalt(): Promise<string> {
     const saltRounds = 10;
@@ -22,7 +24,6 @@ export class PasswordService {
       credentials.password.salt,
     );
 
-    console.log(credentials, inputPassword, hashedInputPassword);
     return credentials.password.hashedPassword === hashedInputPassword;
   }
 }

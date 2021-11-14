@@ -1,13 +1,27 @@
-import { Controller, Post, Req, UseGuards, Body } from '@nestjs/common';
+import {
+  Controller,
+  Post,
+  Req,
+  UseGuards,
+  Body,
+  HttpCode,
+  UseInterceptors,
+} from '@nestjs/common';
 import { ApiBasicAuth, ApiTags, ApiResponse } from '@nestjs/swagger';
-import { AuthService } from '../auth.service';
+
+import {
+  DtoValidationGuard,
+  ExceptionsInterceptor,
+} from '@file-encoder-api/common';
+
+import { AuthService } from '../domain';
 import { LocalAuthGuard } from '../guards';
 import { LoggedInUserDto } from '../../auth';
-import { AuthToken } from '../auth.service';
-import { DtoValidationGuard } from '../../common/guards/dto-validation.guard';
+import { AuthToken } from '../domain/auth.service';
 import { CredentialsDto } from './dtos/credentials.dto';
 
 @ApiTags('Auth')
+@UseInterceptors(ExceptionsInterceptor)
 @Controller()
 export class AuthController {
   constructor(private authService: AuthService) {}
@@ -18,6 +32,7 @@ export class AuthController {
     type: AuthToken,
     description: 'Api bearer token',
   })
+  @HttpCode(200)
   @UseGuards(LocalAuthGuard)
   @UseGuards(new DtoValidationGuard<CredentialsDto>(CredentialsDto))
   @Post('/sign-in')

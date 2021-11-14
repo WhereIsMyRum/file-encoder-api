@@ -13,6 +13,7 @@
     "incremental": true,
     "strict": true,
     "paths": {
+      "@file-encoder-api/auth": ["src/auth"],
       "@file-encoder-api/users/application": ["src/users/application"],
       "@file-encoder-api/users/domain": ["src/users/domain"],
       "@file-encoder-api/users/infrastructure": ["src/users/infrastructure"],
@@ -20,6 +21,7 @@
       "@file-encoder-api/encryptor/dtos": ["src/encryptor/dtos"],
       "@file-encoder-api/encryptor": ["src/encryptor"],
       "@file-encoder-api/common": ["src/common"],
+      "@file-encoder-api/tests/utils": ["src/tests/utils"],
     }
   }
 }

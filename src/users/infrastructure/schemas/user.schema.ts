@@ -2,8 +2,8 @@ import { Schema } from 'mongoose';
 
 const RSAKeyPairSchema = new Schema(
   {
-    privateKey: String,
-    publicKey: String,
+    privKey: String,
+    pubKey: String,
   },
   { _id: false },
 );
