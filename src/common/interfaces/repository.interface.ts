@@ -1,5 +1,6 @@
 export interface RepositoryInterface<T> {
-  insert(t: T): Promise<string>;
-  getById(id: string): Promise<T>;
-  getAll(): Promise<T[]>;
+  save(data: T): Promise<T | null>;
+  insert(data: T): Promise<string>;
+  getById(id: string): Promise<T | null>;
+  delete(id: string): Promise<void>;
 }

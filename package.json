@@ -7,7 +7,7 @@
   "license": "UNLICENSED",
   "scripts": {
     "prebuild": "rimraf dist",
-    "build": "nest build && yarn copy-files && yarn run make-dirs",
+    "build": "nest build",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
     "start": "nest start",
     "start:dev": "nest start --watch",
@@ -19,10 +19,10 @@
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e": "jest --config ./test/jest-e2e.json",
-    "copy-files": "copyfiles -u 2 -a ./src/static/*.pdf ./dist/static/",
-    "make-dirs": "mkdirp .database/file-encryptor-data"
+    "circular-check": "madge --circular --extensions ts ./src"
   },
   "dependencies": {
+    "@nestjs/axios": "^0.0.3",
     "@nestjs/common": "^8.1.2",
     "@nestjs/config": "^1.1.0",
     "@nestjs/core": "^8.1.2",
@@ -32,11 +32,11 @@
     "@nestjs/platform-express": "^8.1.2",
     "@nestjs/swagger": "^5.1.4",
     "@types/express": "^4.17.13",
+    "bcrypt": "^5.0.1",
     "class-transformer": "^0.4.0",
     "class-validator": "^0.13.1",
     "copyfiles": "^2.4.1",
     "express": "^4.17.1",
-    "lodash": "^4.17.21",
     "mongodb-memory-server": "^8.0.0",
     "mongoose": "^6.0.12",
     "passport": "^0.5.0",
@@ -53,7 +53,8 @@
   "devDependencies": {
     "@nestjs/cli": "^7.6.0",
     "@nestjs/schematics": "^7.3.0",
-    "@nestjs/testing": "^8.1.2",
+    "@nestjs/testing": "^8.2.0",
+    "@types/bcrypt": "^5.0.0",
     "@types/jest": "^26.0.22",
     "@types/lodash": "^4.14.176",
     "@types/node": "^14.14.36",
@@ -67,6 +68,7 @@
     "eslint-config-prettier": "^8.1.0",
     "eslint-plugin-prettier": "^3.3.1",
     "jest": "^26.6.3",
+    "madge": "^5.0.1",
     "mkdirp": "^1.0.4",
     "prettier": "^2.2.1",
     "supertest": "^6.1.3",
@@ -91,6 +93,9 @@
       "**/*.(t|j)s"
     ],
     "coverageDirectory": "../coverage",
-    "testEnvironment": "node"
+    "testEnvironment": "node",
+    "moduleNameMapper": {
+      "@file-encoder-api/(.*)": "<rootDir>/$1"
+    }
   }
 }

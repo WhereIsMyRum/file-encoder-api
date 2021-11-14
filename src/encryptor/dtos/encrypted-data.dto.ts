@@ -2,5 +2,11 @@ import { ApiProperty } from '@nestjs/swagger';
 
 export class EncryptedData {
   @ApiProperty()
-  ciphertextBlocks!: string[];
+  data!: string;
+
+  @ApiProperty()
+  iv!: string;
+
+  @ApiProperty()
+  aesKey!: string;
 }

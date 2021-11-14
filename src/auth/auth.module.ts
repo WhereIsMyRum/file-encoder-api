@@ -2,14 +2,17 @@ import { Module } from '@nestjs/common';
 import { JwtModule } from '@nestjs/jwt';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 
+import { UsersModule } from '@file-encoder-api/users';
+
 import { AuthController } from './user-interface/auth.controller';
-import { UsersModule } from '../users';
-import { AuthService } from './auth.service';
+import { AuthService } from './domain';
 import { JwtStrategy, LocalStrategy } from './guards';
+import { CommonModule } from '../common';
 
 @Module({
   imports: [
     UsersModule,
+    CommonModule,
     JwtModule.registerAsync({
       imports: [ConfigModule],
       inject: [ConfigService],

@@ -2,17 +2,31 @@ import { ApiProperty } from '@nestjs/swagger';
 
 export class RSAKeyPair {
   @ApiProperty()
-  publicKey!: string;
+  pubKey!: string;
 
   @ApiProperty()
-  privateKey!: string;
+  privKey!: string;
+}
+
+export type UserParameters = {
+  id: string;
+  email: string;
+  rsaKeyPair?: RSAKeyPair;
+};
+
+export interface UserCredentials {
+  id: string;
+  email: string;
+  password: {
+    salt: string;
+    hashedPassword: string;
+  };
 }
 
 export class User {
   constructor(
     private readonly id: string,
     private readonly email: string,
-    private password: string,
     private rsaKeyPair?: RSAKeyPair,
   ) {}
 
@@ -24,14 +38,6 @@ export class User {
     return this.email;
   }
 
-  getPassword(): string {
-    return this.password;
-  }
-
-  updatePassword(): void {
-    this.password;
-  }
-
   getRsaKeyPair(): RSAKeyPair | undefined {
     return this.rsaKeyPair;
   }
@@ -40,6 +46,14 @@ export class User {
     this.rsaKeyPair = {
       ...this.rsaKeyPair,
       ...newKeyPair,
+    };
+  }
+
+  parameters(): UserParameters {
+    return {
+      id: this.id,
+      email: this.email,
+      rsaKeyPair: this.rsaKeyPair,
     };
   }
 }
