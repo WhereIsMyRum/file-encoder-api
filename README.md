@@ -54,6 +54,20 @@ USER_EMAIL - users created in the database by default in CSV
 USER_PASSWORDS - passwords for users created by default in CSV (1st email ->1st password, 2nd email -> 2nd password etc.)
 ```
 
+# The object returned by the /encrypt endpoint has the following structure:
+```
+{
+  data: string;
+  iv: string;
+  aesKey: string;
+}
+```
+where
+`data` is the file encrypted using symmetric encryption with `aes-256-ctr` algorithm, the `iv` is the initialization vector, and the `aesKey` is the key used for symetric encryption, where this key is encrypted using user's public RSA key with `RSA_PKCS1_OAEP_PADDING`. So in order to the decrypt the data, the user has to:
+
+1. Decrypt the AES key using the supplied `iv` and his private RSA key
+2. Decrypt the data using the acquired AES symetric key 
+
 
 
 ### Old doc:
