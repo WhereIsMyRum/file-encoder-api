@@ -20,7 +20,7 @@ $ yarn run build
 $ yarn run start
 ```
 
-# watch mode
+#  watch mode
 ```bash
 $ yarn run start:dev
 ```
